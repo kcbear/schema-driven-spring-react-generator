@@ -28,7 +28,7 @@ jobs:
             e2e/package.json
 
       - name: Generate sample application
-        run: gradle :generator:run --args="--schema examples/purchase-order.json --output build/generated"
+        run: gradle :generator:run --args="--schema ../examples/purchase-order.json --output ../build/generated"
 
       - name: Build generated React application
         run: |
