@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "schema-generator-e2e",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
