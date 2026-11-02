@@ -1,0 +1,11 @@
+{
+ "resource":{"name":"PurchaseOrder","plural":"purchase-orders","package":"com.example.purchaseorders","id":"id"},
+ "fields":[
+  {"name":"id","type":"integer","label":"ID","editable":false},
+  {"name":"orderNumber","type":"string","label":"Order number","required":true},
+  {"name":"supplier","type":"string","label":"Supplier","required":true},
+  {"name":"orderDate","type":"date","label":"Order date"},
+  {"name":"totalAmount","type":"number","label":"Total amount"},
+  {"name":"approved","type":"boolean","label":"Approved"}
+ ]
+}
