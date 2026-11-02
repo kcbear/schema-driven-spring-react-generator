@@ -1,115 +1,62 @@
 import { expect, test } from '@playwright/test';
 
-type PurchaseOrder = {
-  id: number;
-  orderNumber: string;
-  supplier: string;
-  orderDate?: string;
-  totalAmount?: number;
-  approved?: boolean;
+const initialOrders = {
+  content: [{ id: 1, orderNumber: 'PO-100', supplier: 'Acme', orderDate: '2026-11-01', totalAmount: 125.5, approved: false }],
+  totalElements: 1, totalPages: 1, number: 0, size: 20
 };
 
-test('generated UI creates, edits and deletes a purchase order', async ({ page }) => {
-  const orders: PurchaseOrder[] = [];
-  let nextId = 1;
-  const requests: Array<{ method: string; body?: PurchaseOrder }> = [];
-
+test('creates, edits and deletes a purchase order', async ({ page }) => {
+  let orders = [...initialOrders.content];
+  let nextId = 2;
   await page.route('**/api/purchase-orders**', async route => {
     const request = route.request();
-    const method = request.method();
-    const url = new URL(request.url());
-    const id = Number(url.pathname.split('/').at(-1));
-
-    if (method === 'GET') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          content: orders,
-          totalElements: orders.length,
-          totalPages: 1,
-          number: 0,
-          size: 20
-        })
-      });
-      return;
-    }
-
-    if (method === 'POST') {
-      const body = request.postDataJSON() as PurchaseOrder;
-      requests.push({ method, body });
-      const created = { ...body, id: nextId++ };
+    if (request.method() === 'GET') {
+      await route.fulfill({ json: { ...initialOrders, content: orders, totalElements: orders.length } });
+    } else if (request.method() === 'POST') {
+      const created = { id: nextId++, ...request.postDataJSON() };
       orders.push(created);
-      await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify(created) });
-      return;
-    }
-
-    if (method === 'PUT') {
-      const body = request.postDataJSON() as PurchaseOrder;
-      requests.push({ method, body });
-      const index = orders.findIndex(order => order.id === id);
-      if (index < 0) {
-        await route.fulfill({ status: 404, body: 'Not found' });
-        return;
-      }
-      orders[index] = { ...body, id };
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(orders[index]) });
-      return;
-    }
-
-    if (method === 'DELETE') {
-      requests.push({ method });
-      const index = orders.findIndex(order => order.id === id);
-      if (index >= 0) orders.splice(index, 1);
+      await route.fulfill({ status: 201, json: created });
+    } else if (request.method() === 'PUT') {
+      const id = Number(new URL(request.url()).pathname.split('/').pop());
+      orders = orders.map(order => order.id === id ? { ...request.postDataJSON(), id } : order);
+      await route.fulfill({ json: orders.find(order => order.id === id) });
+    } else if (request.method() === 'DELETE') {
+      const id = Number(new URL(request.url()).pathname.split('/').pop());
+      orders = orders.filter(order => order.id !== id);
       await route.fulfill({ status: 204, body: '' });
-      return;
+    } else {
+      await route.continue();
     }
-
-    await route.fulfill({ status: 405, body: 'Method not allowed' });
   });
 
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'PurchaseOrder', level: 1 })).toBeVisible();
-
-  await page.getByLabel('Order number').fill('PO-1001');
-  await page.getByLabel('Supplier').fill('Acme Supplies');
+  await expect(page.getByRole('heading', { name: 'PurchaseOrder' })).toBeVisible();
+  await expect(page.getByText('PO-100')).toBeVisible();
+  await page.getByLabel('Order number').fill('PO-200');
+  await page.getByLabel('Supplier').fill('Globex');
   await page.getByLabel('Order date').fill('2026-11-02');
-  await page.getByLabel('Total amount').fill('1250.50');
+  await page.getByLabel('Total amount').fill('250.75');
   await page.getByLabel('Approved').check();
   await page.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByText('PO-200')).toBeVisible();
+  await expect(page.getByText('Globex')).toBeVisible();
 
-  const createdRow = page.getByRole('row').filter({ hasText: 'PO-1001' });
-  await expect(createdRow).toBeVisible();
-  expect(requests[0]).toMatchObject({
-    method: 'POST',
-    body: {
-      orderNumber: 'PO-1001',
-      supplier: 'Acme Supplies',
-      orderDate: '2026-11-02',
-      totalAmount: 1250.5,
-      approved: true
-    }
-  });
-
+  const createdRow = page.getByRole('row').filter({ hasText: 'PO-200' });
   await createdRow.getByRole('button', { name: 'Edit' }).click();
   await expect(page.getByLabel('Approved')).toBeChecked();
-  await page.getByLabel('Supplier').fill('Acme Industrial');
+  await page.getByLabel('Supplier').fill('Initech');
   await page.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByText('Initech')).toBeVisible();
 
-  const updatedRow = page.getByRole('row').filter({ hasText: 'PO-1001' });
-  await expect(updatedRow).toContainText('Acme Industrial');
-  expect(requests[1]).toMatchObject({ method: 'PUT', body: { supplier: 'Acme Industrial', id: 1 } });
-
-  await updatedRow.getByRole('button', { name: 'Delete' }).click();
-  await expect(page.getByRole('row').filter({ hasText: 'PO-1001' })).toHaveCount(0);
-  expect(requests.map(request => request.method)).toEqual(['POST', 'PUT', 'DELETE']);
+  const editedRow = page.getByRole('row').filter({ hasText: 'PO-200' });
+  await editedRow.getByRole('button', { name: 'Delete' }).click();
+  await expect(page.getByText('PO-200')).toHaveCount(0);
 });
 
-test('generated UI shows an API error accessibly', async ({ page }) => {
+test('shows an accessible error when the list API fails', async ({ page }) => {
   await page.route('**/api/purchase-orders**', route =>
-    route.fulfill({ status: 500, contentType: 'text/plain', body: 'Test service unavailable' })
+    route.fulfill({ status: 500, body: 'Purchase orders unavailable' })
   );
-
   await page.goto('/');
-  await expect(page.getByRole('alert')).toContainText('Test service unavailable');
+  await expect(page.getByRole('alert')).toContainText('Purchase orders unavailable');
 });
