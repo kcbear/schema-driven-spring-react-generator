@@ -50,9 +50,9 @@ final class ProjectGenerator {
         write(frontend.resolve("api.ts"), api(m));
         write(frontend.resolve("App.tsx"), app(m));
         write(frontend.resolve("main.tsx"), "import React from 'react'; import ReactDOM from 'react-dom/client'; import { QueryClient, QueryClientProvider } from '@tanstack/react-query'; import App from './App'; const client=new QueryClient(); ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><QueryClientProvider client={client}><App/></QueryClientProvider></React.StrictMode>);\n");
-        write(frontend.resolve("index.html"), "<div id=\"root\"></div><script type=\"module\" src=\"/main.tsx\"></script>\n");
+        write(output.resolve("frontend/index.html"), "<div id=\"root\"></div><script type=\"module\" src=\"/main.tsx\"></script>\n");
         write(output.resolve("frontend/package.json"), "{\"type\":\"module\",\"scripts\":{\"dev\":\"vite\",\"build\":\"tsc && vite build\"},\"dependencies\":{\"@tanstack/react-query\":\"^5.66.0\",\"@tanstack/react-table\":\"^8.21.2\",\"react\":\"^18.3.1\",\"react-dom\":\"^18.3.1\"},\"devDependencies\":{\"@types/react\":\"^18.3.18\",\"@types/react-dom\":\"^18.3.5\",\"@vitejs/plugin-react\":\"^4.3.4\",\"typescript\":\"^5.7.3\",\"vite\":\"^6.1.0\"}}\n");
-        write(output.resolve("frontend/vite.config.ts"), "import { defineConfig } from 'vite'; import react from '@vitejs/plugin-react'; export default defineConfig({plugins:[react()],server:{proxy:{'/api':'http://localhost:8080'}}});\n");
+        write(output.resolve("frontend/tsconfig.json"), "{\"compilerOptions\":{\"target\":\"ES2022\",\"useDefineForClassFields\":true,\"lib\":[\"ES2022\",\"DOM\",\"DOM.Iterable\"],\"module\":\"ESNext\",\"skipLibCheck\":true,\"moduleResolution\":\"bundler\",\"allowImportingTsExtensions\":true,\"resolveJsonModule\":true,\"isolatedModules\":true,\"noEmit\":true,\"jsx\":\"react-jsx\",\"strict\":true}\n");\n        write(output.resolve("frontend/vite.config.ts"), "import { defineConfig } from 'vite'; import react from '@vitejs/plugin-react'; export default defineConfig({plugins:[react()],server:{proxy:{'/api':'http://localhost:8080'}}});\n");
         write(output.resolve("README.md"), "Generated CRUD starter for " + m.name() + ". Configure DB_URL, DB_USER and DB_PASSWORD, then run Gradle in backend and npm install/npm run dev in frontend.\n");
     }
 
