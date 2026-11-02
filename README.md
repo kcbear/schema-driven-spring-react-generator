@@ -23,4 +23,8 @@ SchemaLoader validates and normalizes input to ResourceModel; ProjectGenerator e
 ## Scope
 This is an extensible CRUD starter, not a production-certified framework. Add DTOs, Bean Validation, authorization, audit/locking, robust error handling, relationships, richer filtering/sorting, migration evolution, and integration/e2e tests before production. Review generated code and secure database credentials.
 
+## End-to-end tests
+
+CI generates the sample application, builds the generated React frontend, and runs Playwright tests in Chromium. The tests cover create, edit, delete, checkbox state, and accessible API-error display using mocked API responses. Each CI run uploads a `playwright-results-*` artifact containing the HTML report and JUnit XML; traces, screenshots, and videos are retained for failed tests. Download the artifact from the workflow run's **Artifacts** section (retained for 30 days).
+
 Apache-2.0.
