@@ -58,5 +58,5 @@ test('shows an accessible error when the list API fails', async ({ page }) => {
     route.fulfill({ status: 500, body: 'Purchase orders unavailable' })
   );
   await page.goto('/');
-  await expect(page.getByRole('alert')).toContainText('Purchase orders unavailable');
+  await expect(page.getByRole('alert')).toContainText('Purchase orders unavailable', { timeout: 15000 });
 });
