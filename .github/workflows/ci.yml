@@ -1,4 +1,4 @@
-name: CI
+name: Global instruments generator CI
 on: [push, pull_request]
 
 permissions:
