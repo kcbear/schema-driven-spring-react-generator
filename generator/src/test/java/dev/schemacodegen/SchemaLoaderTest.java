@@ -26,5 +26,6 @@ class SchemaLoaderTest {
   assertTrue(controller.contains("defaultValue"));
   assertTrue(controller.contains("50"));
   assertTrue(controller.contains("PageRequest.of(page"));
+  assertTrue(controller.contains("Sort.by"));
  }
 }
