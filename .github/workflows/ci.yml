@@ -28,7 +28,10 @@ jobs:
             e2e/package.json
 
       - name: Generate sample application
-        run: gradle :generator:run --args="--schema ../examples/purchase-order.json --output ../build/generated"
+        run: gradle :generator:run --args="--schema ../examples/global-instruments.json --output ../build/generated"
+
+      - name: Compile generated Spring Boot backend
+        run: gradle -p build/generated/backend build
 
       - name: Build generated React application
         run: |
