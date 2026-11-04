@@ -1,11 +1,19 @@
 {
- "resource":{"name":"PurchaseOrder","plural":"purchase-orders","package":"com.example.purchaseorders","id":"id"},
- "fields":[
-  {"name":"id","type":"integer","label":"ID","editable":false},
-  {"name":"orderNumber","type":"string","label":"Order number","required":true},
-  {"name":"supplier","type":"string","label":"Supplier","required":true},
-  {"name":"orderDate","type":"date","label":"Order date"},
-  {"name":"totalAmount","type":"number","label":"Total amount"},
-  {"name":"approved","type":"boolean","label":"Approved"}
- ]
+  "resource": {"name":"Instrument","plural":"instruments","package":"com.example.globaltrading","id":"id"},
+  "demoRecords": 10000,
+  "fields": [
+    {"name":"id","type":"integer","label":"ID","editable":false,"list":false},
+    {"name":"symbol","type":"string","label":"Ticker","required":true},
+    {"name":"name","type":"string","label":"Instrument name","required":true},
+    {"name":"instrumentType","type":"string","label":"Type","required":true},
+    {"name":"exchange","type":"string","label":"Exchange","required":true},
+    {"name":"country","type":"string","label":"Country"},
+    {"name":"currency","type":"string","label":"Trading currency"},
+    {"name":"isin","type":"string","label":"ISIN"},
+    {"name":"sector","type":"string","label":"Sector"},
+    {"name":"lastPrice","type":"number","label":"Last price"},
+    {"name":"marketCap","type":"number","label":"Market cap"},
+    {"name":"volume","type":"integer","label":"Daily volume"},
+    {"name":"active","type":"boolean","label":"Active"}
+  ]
 }
