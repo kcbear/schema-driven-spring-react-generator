@@ -8,7 +8,7 @@ JDK 21, Gradle 8.8+, Node.js 20+, PostgreSQL.
 ## Build and generate
 ```bash
 gradle test
-gradle :generator:run --args="--schema ../examples/purchase-order.json --output ../build/generated"
+gradle :generator:run --args="--schema ../examples/global-instruments.json --output ../build/generated"
 ``
 Use `--force` to replace a non-empty output directory.
 
@@ -23,7 +23,7 @@ The schema's `demoRecords: 10000` setting generates 10,000 deterministic synthet
 The generated REST list endpoint uses Spring Data paging (default 50 records, maximum 100 per request). The React UI requests one page at a time and displays the current page, total pages and total instrument count. It does not fetch all 10,000 records into the browser.
 
 ## Schema
-See examples/purchase-order.json. Scalar field types: string, integer, number, boolean, date, datetime. Set `demoRecords` to a non-negative integer to generate deterministic sample rows for the example resource.
+See examples/global-instruments.json. Scalar field types: string, integer, number, boolean, date, datetime. Set `demoRecords` to a non-negative integer to generate deterministic sample rows for the example resource.
 
 ## Architecture
 SchemaLoader validates and normalizes input to ResourceModel; ProjectGenerator emits editable Java and TypeScript source. No runtime schema engine is required.
