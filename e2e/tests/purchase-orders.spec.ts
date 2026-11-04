@@ -29,7 +29,8 @@ test('renders a 10,000-instrument universe using server-side paging', async ({ p
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Instrument' })).toBeVisible();
   await expect(page.getByText('GLB0000001')).toBeVisible();
-  await expect(page.getByText('Showing 1–50 of 10,000 instruments')).toBeVisible();
+  await expect(page.getByRole('row')).toHaveCount(51);
+  await expect(page.getByText('Page 1 of 200 · 10000 instruments')).toBeVisible();
   await expect(page.getByText('Global Instrument 51')).toHaveCount(0);
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByText('GLB0000051')).toBeVisible();
