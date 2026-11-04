@@ -33,6 +33,6 @@ This is an extensible CRUD starter, not a production-certified trading platform.
 
 ## End-to-end tests
 
-CI generates the sample application, builds the generated React frontend, and runs Playwright tests in Chromium. Tests verify paging through a mocked 10,000-record API response and accessible API-error display. Each CI run uploads a `playwright-results-*` artifact containing the HTML report and JUnit XML; screenshots are captured for every test. Artifacts are retained for 1 day.
+CI generates the sample application, compiles the generated Spring Boot backend, builds the generated React frontend, and runs Playwright tests in Chromium. Tests verify paging through a mocked 10,000-record API response and accessible API-error display. Each CI run uploads a `playwright-results-*` artifact containing the HTML report and JUnit XML; screenshots are captured for every test. Artifacts are retained for 1 day.
 
 Apache-2.0.
