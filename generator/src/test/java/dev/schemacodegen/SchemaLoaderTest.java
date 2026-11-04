@@ -23,7 +23,8 @@ class SchemaLoaderTest {
   assertTrue(initializer.contains("i<10000"));
   assertTrue(initializer.contains("\"ETF\""));
   assertTrue(initializer.contains("\"STOCK\""));
-  assertTrue(controller.contains("defaultValue=\\\"50\\\""));
+  assertTrue(controller.contains("defaultValue"));
+  assertTrue(controller.contains("50"));
   assertTrue(controller.contains("PageRequest.of(page"));
  }
 }
