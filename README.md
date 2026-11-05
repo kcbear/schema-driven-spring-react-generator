@@ -108,6 +108,55 @@ Each field has a camelCase `name`, a supported `type`, and an optional display `
 
 The loader checks that the resource name is PascalCase, the plural is kebab-case, the Java package is valid, field names are valid and unique, field types are supported, and the ID field exists. `demoRecords` is optional and defaults to zero; it must be non-negative.
 
+### How the JSON model maps to the UI view and table columns
+
+There is currently **one resource schema that drives both the data model and the generated CRUD screen**. You do not write a second column definition or a separate React view configuration. Instead, each entry in `fields` describes a model property and carries a small amount of presentation metadata used by the generated screen.
+
+For example, these fields from `examples/global-instruments.json`:
+
+```json
+{
+  "name": "symbol",
+  "type": "string",
+  "label": "Ticker",
+  "required": true,
+  "editable": true,
+  "list": true
+},
+{
+  "name": "isin",
+  "type": "string",
+  "label": "ISIN",
+  "editable": true,
+  "list": false
+},
+{
+  "name": "id",
+  "type": "integer",
+  "label": "ID",
+  "editable": false,
+  "list": false
+}
+```
+
+produce the following behaviour:
+
+| Field metadata | Generated model / API | Table view (TanStack Table) | Create / edit form |
+|---|---|---|---|
+| `name` | Property on the Java entity and TypeScript interface; included in API payloads | Identifies the data accessor | Identifies the value bound to the input |
+| `type` | Determines the Java and TypeScript scalar types | Values are rendered using the current generic cell rendering | Determines the basic HTML input type (text, number, checkbox or date) |
+| `label` | No effect on the stored property name | Becomes the column header | Becomes the input label |
+| `list` | Does not remove the property from the model or API | `true`: include a column; `false`: omit the column | No effect |
+| `editable` | Does not make the property read-only in the REST API | No effect | `true`: include an input, except that the resource ID is always omitted; `false`: omit the input |
+| `required` | Retained as schema metadata | No effect | Currently not enforced: generated HTML inputs do not receive `required`, and the backend does not generate Bean Validation constraints |
+
+The defaults are `editable: true`, `list: true`, and `required: false`. The resource ID is special: it identifies the entity and is always excluded from the generated form, even if its `editable` value is omitted or set to `true`.
+
+**Column selection and ordering:** the generator filters the schema's `fields` array to entries where `list` is true, then emits a TanStack Table column for each one. The column accessor is the field's `name`, its header is the field's `label`, and its position follows the field's position in the JSON array. For example, setting `"list": false` on `isin` hides ISIN from the table while the property remains available to the backend, API and form (if editable).
+
+**Important scope boundary:** these flags provide a basic list-view and form definition, not a full view-descriptor language. The current schema does not define multiple screens, per-column widths, alignment, formatting, sorting/filtering controls, nested views or role-based visibility. The generated table currently displays values generically. Those richer presentation requirements would need additional schema metadata and corresponding generator templates.
+
+
 ### What the example demonstrates
 
 The generated Instrument catalogue includes both **STOCK** and **ETF** records across 12 exchanges: NASDAQ, NYSE, LSE, XETRA, Euronext Paris, SIX, HKEX, Tokyo Stock Exchange, ASX, TSX, BSE and SGX. Fields include ticker, instrument name, instrument type, exchange, country, trading currency, ISIN, sector, last price, market capitalisation, daily volume and active status.
