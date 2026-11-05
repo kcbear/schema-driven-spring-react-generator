@@ -112,7 +112,7 @@ final class ProjectGenerator {
             case "currency" -> "new String[]{\"USD\",\"USD\",\"GBP\",\"EUR\",\"EUR\",\"CHF\",\"HKD\",\"JPY\",\"AUD\",\"CAD\",\"INR\",\"SGD\"}[i % 12]";
             case "isin" -> "String.format(\"US%010d\", i + 1)";
             case "sector" -> "new String[]{\"Technology\",\"Financials\",\"Healthcare\",\"Energy\",\"Industrials\",\"Consumer Discretionary\",\"Consumer Staples\",\"Materials\",\"Utilities\",\"Communication Services\",\"Real Estate\"}[i % 11]";
-            default -> "\"" + f.label().replace("\", "\\\").replace("\"", "\\"") + " \" + (i + 1)";
+            default -> "\"" + f.label().replace("\\", "\\\\").replace("\"", "\\\"") + " \" + (i + 1)";
         };
         return switch (f.type()) {
             case "integer" -> "Long.valueOf(10000L + (long)i * 137L)";
