@@ -6,7 +6,9 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Pin to a Playwright-supported LTS image. ubuntu-latest moved to 26.04,
+    # which Playwright 1.56.1 does not yet support for Chromium installation.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
