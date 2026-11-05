@@ -1,3 +1,7 @@
+/**
+ * Generates a complete Spring Boot backend and React frontend from a validated resource model.
+ * Owns the templates and file-writing logic for the generated application; it does not run as part of that application's runtime.
+ */
 package dev.schemacodegen;
 
 import java.io.IOException;
