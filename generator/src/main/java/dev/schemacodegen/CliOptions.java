@@ -1,3 +1,7 @@
+/**
+ * Immutable command-line configuration for a generation run.
+ * Holds the input schema path, output directory and overwrite permission parsed by {@link #parse(String[])}.
+ */
 package dev.schemacodegen;
 import java.nio.file.Path;
 record CliOptions(Path schema, Path output, boolean force) {
