@@ -1,3 +1,7 @@
+/**
+ * Reads and validates a JSON resource schema.
+ * Converts the raw Jackson tree into the typed {@link ResourceModel} and {@link FieldModel} model used by generation.
+ */
 package dev.schemacodegen;
 import com.fasterxml.jackson.databind.*; import java.nio.file.Path; import java.util.*;
 final class SchemaLoader {
