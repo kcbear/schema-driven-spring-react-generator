@@ -1,3 +1,7 @@
+/**
+ * Unit tests for schema loading and representative project-generation behaviour.
+ * Verifies the global-instruments example is mapped correctly and that key demo-data and paged-API code is emitted.
+ */
 package dev.schemacodegen;
 import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
